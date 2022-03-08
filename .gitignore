@@ -1,0 +1,26 @@
+# Environment Configuration
+.env
+
+# Dependency directory
+node_modules
+.husky/
+
+# Test coverage directory
+coverage
+
+# Ignore Apple macOS Desktop Services Store
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# ngrok tunnel file
+config/tunnel.pid
+
+# webpack build output
+dist/
+
+#VS code
+.history/
+.github/
