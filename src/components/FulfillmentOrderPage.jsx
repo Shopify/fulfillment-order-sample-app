@@ -35,6 +35,7 @@ export function FulfillmentOrdersPage() {
   console.log(data);
   return (
     <Layout.Section>
+      HELLO
       <Card>
         <FulfillmentOrderList
           fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
