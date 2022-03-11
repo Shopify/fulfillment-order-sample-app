@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=production node server/index.js",
-    "test": "vitest --reporter=verbose"
+    "test": "vitest --reporter=verbose",
+    "format": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "type": "module",
   "engines": {

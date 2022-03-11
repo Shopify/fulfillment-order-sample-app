@@ -1,13 +1,12 @@
-import { gql, useQuery } from "@apollo/client";
-import { Loading } from "@shopify/app-bridge-react";
-import { Banner, Card, Layout } from "@shopify/polaris";
-import { FulfillmentOrderList } from "./FulfillmentOrderList";
-
+import { gql, useQuery } from '@apollo/client';
+import { Loading } from '@shopify/app-bridge-react';
+import { Banner, Card, Layout } from '@shopify/polaris';
+import { FulfillmentOrderList } from './FulfillmentOrderList';
 
 const FULFILLMENT_ORDER_QUERY = gql`
   {
     shop {
-      fulfillmentOrders(first:10) {
+      fulfillmentOrders(first: 10) {
         edges {
           node {
             id
@@ -27,7 +26,9 @@ export function FulfillmentOrdersPage() {
 
   if (error) {
     return (
-      <Banner status="critical">There was an issue loading FulfillmentOrders.</Banner>
+      <Banner status="critical">
+        There was an issue loading FulfillmentOrders.
+      </Banner>
     );
   }
 
@@ -35,7 +36,11 @@ export function FulfillmentOrdersPage() {
   return (
     <Layout.Section>
       <Card>
-        <FulfillmentOrderList fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(({ node }) => node)} />
+        <FulfillmentOrderList
+          fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
+            ({ node }) => node
+          )}
+        />
       </Card>
     </Layout.Section>
   );

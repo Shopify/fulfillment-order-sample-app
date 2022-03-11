@@ -1,8 +1,8 @@
-import { gql, useQuery } from "@apollo/client";
-import { Loading } from "@shopify/app-bridge-react";
-import { Banner, Card, Layout } from "@shopify/polaris";
+import { gql, useQuery } from '@apollo/client';
+import { Loading } from '@shopify/app-bridge-react';
+import { Banner, Card, Layout } from '@shopify/polaris';
 
-import { ProductsList } from "./ProductsList";
+import { ProductsList } from './ProductsList';
 
 const PRODUCTS_QUERY = gql`
   {

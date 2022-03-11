@@ -1,10 +1,9 @@
 export function FulfillmentOrderList({ fulfillmentOrders }) {
-
   return (
     <>
-      {
-        fulfillmentOrders.map(({id}) => <p>{id}</p>)
-      }
+      {fulfillmentOrders.map(({ id }) => (
+        <p>{id}</p>
+      ))}
     </>
-  )
+  );
 }
