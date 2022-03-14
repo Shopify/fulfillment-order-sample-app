@@ -10,6 +10,19 @@ const FULFILLMENT_ORDER_QUERY = gql`
         edges {
           node {
             id
+            order {
+              id
+            }
+            merchantRequests(first: 10) {
+              edges {
+                node {
+                  message
+                }
+              }
+            }
+            assignedLocation {
+              name
+            }
           }
         }
       }
@@ -32,7 +45,6 @@ export function FulfillmentOrdersPage() {
     );
   }
 
-  console.log(data);
   return (
     <Layout.Section>
       <Card>

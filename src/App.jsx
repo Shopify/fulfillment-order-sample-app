@@ -30,7 +30,6 @@ export default function App() {
       >
         <MyProvider>
           <PageLayout>
-            <ProductsPage />
             <FulfillmentOrdersPage />
           </PageLayout>
         </MyProvider>
