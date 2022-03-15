@@ -1,25 +1,51 @@
-import { FulfillmentOrdersPage } from '../components/FulfillmentOrderPage';
-import { createMount } from '@shopify/react-testing';
+// import { FulfillmentOrdersPage } from '../components/FulfillmentOrderPage';
+// import { createMount, mount, toContainReactText } from '@shopify/react-testing';
+// import { createGraphQLFactory } from '@shopify/graphql-testing';
+// import { PolarisTestProvider } from '@shopify/polaris';
+// import { MockedProvider } from '@apollo/react-testing';
 
-import { MockProvider } from '@apollo/react-testing';
-import { Page } from '@shopify/polaris';
-import { PolarisTestProvider } from '@shopify/polaris';
-import en from '@shopify/polaris/locales/en.json';
+// const createGraphQL = createGraphQLFactory();
+// jest.mock('@shopify/app-bridge-react');
+// export const mountWithAppContext = createMount({
+//   context({ graphQL = createGraphQL() }) {
+//     return { graphQL };
+//   },
+//   render(element, { graphQL }) {
+//     return (
+//       <PolarisTestProvider>
+//         <MockedProvider graphQL={graphQL}>{element}</MockedProvider>
+//       </PolarisTestProvider>
+//     );
+//   },
+//   async afterMount(root, options) {
+//     const { graphQL } = root.context;
 
-const mount = createMount({
-  context(options) {
-    return options;
-  },
-  render(element, context) {
-    return (
-      <PolarisTestProvider i18n={en} {...context}>
-        <MockProvider>{element}</MockProvider>
-      </PolarisTestProvider>
-    );
-  },
-});
+//     if (options.skipInitialGraphQL) {
+//       return;
+//     }
 
-test('loads and displays greeting', async () => {
-  const wrapper = mount(<FulfillmentOrdersPage />);
-  expect(wrapper).toContainReactText('Page');
+//     await root.act(() => graphQL.resolveAll());
+//   },
+// });
+
+// test('loads and displays greeting', async () => {
+//   const wrapper = mountWithAppContext(<FulfillmentOrdersPage />);
+//   const graphQL = createGraphQL({
+//     Pet: {
+//       pet: {
+//         __typename: 'Cat',
+//         name: 'Garfield',
+//       },
+//     },
+//   });
+
+//   graphQL.wrap((resolve) => wrapper.root.act(resolve));
+//   // console.log(wrapper);
+//   await graphQL.resolveAll();
+//   const button = wrapper.find('button');
+//   console.log(button);
+//   expect(wrapper).toContainReactText('Page');
+// });
+test('something', () => {
+  expect(true).toBeTruthy();
 });

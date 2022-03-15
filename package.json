@@ -19,9 +19,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
+    "@apollo/react-testing": "^4.0.0",
     "@shopify/app-bridge": "^2.0.14",
     "@shopify/app-bridge-react": "^2.0.14",
     "@shopify/app-bridge-utils": "^2.0.14",
+    "@shopify/graphql-testing": "^5.1.9",
     "@shopify/polaris": "^9.0.0",
     "@shopify/react-testing": "^3.3.9",
     "@shopify/shopify-api": "^2.1.0",
