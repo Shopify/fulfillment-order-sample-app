@@ -1,25 +1,22 @@
 import { Card, Button, IndexTable } from '@shopify/polaris';
-import { gql, useMutation } from '@apollo/client';
+import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
+import { useState } from 'react';
 
 export function FulfillmentOrderList({ fulfillmentOrders }) {
-  const FULFILLMENT_CREATE_MUTATION = gql`
-    mutation fulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {
-      fulfillmentCreateV2(fulfillment: $fulfillment) {
-        fulfillment {
-          id
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `;
+  const { createFulfillment } = useFulfillmentCreateV2();
+  const [fulfillmentOrdersState, setFulfillmentOrdersState] =
+    useState(fulfillmentOrders);
 
-  const [createFulfillmentMutation] = useMutation(FULFILLMENT_CREATE_MUTATION);
-
-  const rowMarkup = fulfillmentOrders.map(
-    ({ id, assignedLocation, order, merchantRequests }, index) => (
+  const removeFulfillmentItemFromList = (id) => {
+    setFulfillmentOrdersState((prev) => {
+      const itemToRemove = prev.findIndex((order) => order.id === id);
+      const newItems = [...prev];
+      newItems.splice(itemToRemove, 1);
+      return newItems;
+    });
+  };
+  const rowMarkup = fulfillmentOrdersState.map(
+    ({ id, assignedLocation, order }, index) => (
       <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell>ID:{id}</IndexTable.Cell>
         <IndexTable.Cell>Order:{order.id}</IndexTable.Cell>
@@ -27,18 +24,12 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
         <IndexTable.Cell>
           <Button
             onClick={async () => {
-              const result = await createFulfillmentMutation({
-                variables: {
-                  fulfillment: {
-                    lineItemsByFulfillmentOrder: [
-                      {
-                        fulfillmentOrderId: id,
-                      },
-                    ],
-                  },
-                },
-              });
+              const result = await createFulfillment(id);
+              if (result.data?.useFulfillmentCreateV2?.userErrors.length) {
+                console.log('error');
+              }
               console.log('result', result);
+              removeFulfillmentItemFromList(id);
             }}
           >
             Fulfill
@@ -55,7 +46,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
           singular: 'Fulfillment Order',
           plural: 'Fulfillment Orders',
         }}
-        itemCount={Object.keys(fulfillmentOrders).length}
+        itemCount={Object.keys(fulfillmentOrdersState).length}
         headings={[
           { title: 'Fulfillment Order ID' },
           { title: 'Order ID' },
