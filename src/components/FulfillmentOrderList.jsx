@@ -1,4 +1,4 @@
-import { Card, Button, IndexTable } from '@shopify/polaris';
+import { Card, Button, IndexTable, Toast } from '@shopify/polaris';
 import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
 import { useState } from 'react';
 
@@ -6,6 +6,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const { createFulfillment } = useFulfillmentCreateV2();
   const [fulfillmentOrdersState, setFulfillmentOrdersState] =
     useState(fulfillmentOrders);
+  const [showError, setShowError] = useState(false);
 
   const removeFulfillmentItemFromList = (id) => {
     setFulfillmentOrdersState((prev) => {
@@ -15,18 +16,18 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
       return newItems;
     });
   };
-  const rowMarkup = fulfillmentOrdersState.map(
+  const fulfillmentOrderListItems = fulfillmentOrdersState.map(
     ({ id, assignedLocation, order }, index) => (
       <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell>ID:{id}</IndexTable.Cell>
-        <IndexTable.Cell>Order:{order.id}</IndexTable.Cell>
-        <IndexTable.Cell>Location: {assignedLocation.name}</IndexTable.Cell>
+        <IndexTable.Cell>{id}</IndexTable.Cell>
+        <IndexTable.Cell>{order.id}</IndexTable.Cell>
+        <IndexTable.Cell>{assignedLocation.name}</IndexTable.Cell>
         <IndexTable.Cell>
           <Button
             onClick={async () => {
               const result = await createFulfillment(id);
               if (result.data?.useFulfillmentCreateV2?.userErrors.length) {
-                console.log('error');
+                showError(true);
               }
               console.log('result', result);
               removeFulfillmentItemFromList(id);
@@ -41,6 +42,11 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
 
   return (
     <Card>
+      <Toast
+        content="Error - not able to perform mutation"
+        error
+        onDismiss={() => setShowError(false)}
+      />
       <IndexTable
         resourceName={{
           singular: 'Fulfillment Order',
@@ -54,7 +60,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
           { title: 'Fulfill Now' },
         ]}
       >
-        {rowMarkup}
+        {fulfillmentOrderListItems}
       </IndexTable>
     </Card>
   );
