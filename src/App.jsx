@@ -15,7 +15,6 @@ import translations from '@shopify/polaris/locales/en.json';
 import '@shopify/polaris/build/esm/styles.css';
 
 import { PageLayout } from './components/PageLayout';
-import { ProductsPage } from './components/ProductsPage';
 import { FulfillmentOrdersPage } from './components/FulfillmentOrderPage';
 
 export default function App() {
@@ -30,7 +29,6 @@ export default function App() {
       >
         <MyProvider>
           <PageLayout>
-            <ProductsPage />
             <FulfillmentOrdersPage />
           </PageLayout>
         </MyProvider>
