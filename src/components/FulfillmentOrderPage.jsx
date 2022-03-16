@@ -44,10 +44,8 @@ export function FulfillmentOrdersPage() {
       </Banner>
     );
   }
-
   return (
     <Layout.Section>
-      HELLO
       <Card>
         <FulfillmentOrderList
           fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(

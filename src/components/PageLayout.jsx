@@ -2,10 +2,10 @@ import { Layout, Page, Frame } from '@shopify/polaris';
 
 export function PageLayout({ children }) {
   return (
-    <Page>
-      <Frame>
+    <Frame>
+      <Page>
         <Layout>{children}</Layout>
-      </Frame>
-    </Page>
+      </Page>
+    </Frame>
   );
 }
