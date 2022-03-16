@@ -2,9 +2,14 @@ import { FulfillmentOrderList } from '../components/FulfillmentOrderList';
 import { mount } from '@shopify/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
 import { createGraphQLFactory } from '@shopify/graphql-testing';
-import { IndexTable, PolarisTestProvider } from '@shopify/polaris';
+import {
+  IndexTable,
+  PolarisTestProvider,
+  Button,
+  Modal,
+  TextField,
+} from '@shopify/polaris';
 import '@shopify/react-testing/matchers';
-import { Toast } from '@shopify/polaris';
 
 const createGraphQL = createGraphQLFactory({});
 describe('FulfillmentOrderList', () => {
@@ -34,5 +39,18 @@ describe('FulfillmentOrderList', () => {
     expect(child).toContainReactComponent(IndexTable);
     const table = child.find(IndexTable);
     expect(table.children.length).toEqual(1);
+  });
+
+  //test for many fulfillment orders in table
+  // test for fulfill button with graphql
+
+  test('should show a column to add a message on an order', () => {
+    expect(child).toContainReactText('Fulfillment Message');
+    child.find(Button, { id: '123' }).trigger('onClick');
+    expect(child).toContainReactComponent(Modal);
+    // type
+    // console.log(child.find(Modal).find(TextField));
+    // .trigger('onChange', { event: { target: { value: 'test' } } });
+    /// make sure the graphql includes that message
   });
 });

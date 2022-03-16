@@ -3,6 +3,8 @@ import {
   Button,
   IndexTable,
   useIndexResourceState,
+  Modal,
+  TextField,
 } from '@shopify/polaris';
 import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
 import { useState } from 'react';
@@ -16,7 +18,11 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const { selectedResources, handleSelectionChange } = useIndexResourceState(
     fulfillmentOrdersState
   );
-
+  const [modalState, setModalState] = useState({
+    open: false,
+    fulfillmentId: null,
+  });
+  const [message, setMessage] = useState('');
   const removeFulfillmentItemFromList = (idsToRemove) => {
     setFulfillmentOrdersState((prev) => {
       const itemsNotFulfilled = prev.filter(
@@ -26,13 +32,13 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
     });
   };
 
-  const fulfillItems = async (ids) => {
-    const result = await createFulfillment(ids);
+  const fulfillItems = async (id) => {
+    const result = await createFulfillment(id);
     if (result.data.fulfillmentCreateV2?.userErrors.length) {
       setShowError(true);
       return;
     }
-    removeFulfillmentItemFromList(ids);
+    removeFulfillmentItemFromList(id);
   };
 
   const fulfillmentOrderListItems = fulfillmentOrdersState.map(
@@ -46,6 +52,14 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
         <IndexTable.Cell>{id}</IndexTable.Cell>
         <IndexTable.Cell>{order.id}</IndexTable.Cell>
         <IndexTable.Cell>{assignedLocation.name}</IndexTable.Cell>
+        <IndexTable.Cell>
+          <Button
+            id={id}
+            onClick={() => setModalState({ open: true, fulfillmentId: id })}
+          >
+            Add Message
+          </Button>
+        </IndexTable.Cell>
         <IndexTable.Cell>
           <Button onClick={() => fulfillItems([id])}>Fulfill</Button>
         </IndexTable.Cell>
@@ -65,6 +79,28 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
           />
         </>
       )}
+      <Modal
+        title="Fulfillment Message"
+        message="Write your message plz"
+        open={modalState.open}
+        onClose={() => setModalState({ ...modalState, open: false })}
+        primaryAction={{
+          content: 'Add Fulfillment',
+          onAction: () => setModalState({ ...modalState, open: false }),
+        }}
+        secondaryActions={[
+          {
+            content: 'Cancel',
+            onAction: () => setModalState({ ...modalState, open: false }),
+          },
+        ]}
+      >
+        <TextField
+          label="Fulfillment Message"
+          value={message}
+          onChange={setMessage}
+        />
+      </Modal>
       <Card>
         <IndexTable
           resourceName={{
@@ -77,6 +113,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
             { title: 'Fulfillment Order ID' },
             { title: 'Order ID' },
             { title: 'Location' },
+            { title: 'Fulfillment Message' },
             { title: 'Fulfill Now' },
           ]}
         >
