@@ -24,7 +24,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const [modalState, setModalState] = useState({
     open: false,
     fulfillmentId: null,
-    message: null,
+    message: '',
   });
 
   const removeFulfillmentItemFromList = (idsToRemove) => {
@@ -64,19 +64,22 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
         <IndexTable.Cell>{order.id}</IndexTable.Cell>
         <IndexTable.Cell>{assignedLocation.name}</IndexTable.Cell>
         <IndexTable.Cell>
-          {/* if message swap out button */}
-
-          <Button
-            id={id}
-            onClick={() =>
-              setModalState({ open: true, fulfillmentId: id, message: '' })
-            }
-          >
-            Add Message
-          </Button>
+          {modalState.fulfillmentId === id && modalState.message !== '' ? (
+            <span> {modalState.message} </span>
+          ) : (
+            <Button
+              onClick={() =>
+                setModalState({ open: true, fulfillmentId: id, message: '' })
+              }
+            >
+              Add Message
+            </Button>
+          )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <Button onClick={() => fulfillItems(id)}>Fulfill</Button>
+          <Button id={id} onClick={() => fulfillItems(id)}>
+            Fulfill
+          </Button>
         </IndexTable.Cell>
       </IndexTable.Row>
     )
@@ -118,18 +121,6 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
         >
           {fulfillmentOrderListItems}
         </IndexTable>
-
-        {/* We can decide to keep this or not - you cant fulfill across multiple orders so need to update hook */}
-        {/* {selectedResources.length > 0 && (
-          <Button
-            primary
-            onClick={() => {
-              fulfillItems(selectedResources);
-            }}
-          >
-            Fulfill {selectedResources.length} items
-          </Button>
-        )} */}
       </Card>
     </>
   );

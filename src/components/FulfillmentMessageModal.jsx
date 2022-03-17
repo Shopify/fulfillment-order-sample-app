@@ -9,7 +9,7 @@ export default function FulfillmentMessageModal({ open, saveMessage }) {
       open={open}
       onClose={() => saveMessage('')}
       primaryAction={{
-        content: 'Add Fulfillment',
+        content: 'Add Message',
         onAction: () => saveMessage(message),
       }}
       secondaryActions={[

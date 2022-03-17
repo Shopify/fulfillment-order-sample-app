@@ -7,15 +7,15 @@ import {
   PolarisTestProvider,
   Button,
   Modal,
-  TextField,
 } from '@shopify/polaris';
 import '@shopify/react-testing/matchers';
+import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
 
-const createGraphQL = createGraphQLFactory({});
+const createGraphQL = createGraphQLFactory();
 describe('FulfillmentOrderList', () => {
   let child;
+  const graphQL = createGraphQL();
   beforeEach(async () => {
-    const graphQL = createGraphQL();
     const list = mount(
       <PolarisTestProvider>
         <MockedProvider graphQL={graphQL.client}>
@@ -25,6 +25,21 @@ describe('FulfillmentOrderList', () => {
                 id: '123',
                 order: { id: '234' },
                 assignedLocation: { name: 'location 1' },
+              },
+              {
+                id: '345',
+                order: { id: '444' },
+                assignedLocation: { name: 'location 2' },
+              },
+              {
+                id: '678',
+                order: { id: '222' },
+                assignedLocation: { name: 'location 1' },
+              },
+              {
+                id: '901',
+                order: { id: '222' },
+                assignedLocation: { name: 'location 2' },
               },
             ]}
           />
@@ -37,21 +52,18 @@ describe('FulfillmentOrderList', () => {
   });
   test('should show a row in IndexTable for each fulfillment order', () => {
     expect(child).toContainReactComponent(IndexTable);
-    const table = child.find(IndexTable);
-    expect(table.children.length).toEqual(1);
+    expect(child).toContainReactComponentTimes(IndexTable.Row, 4);
   });
-
-  //test for many fulfillment orders in table
   // test for fulfill button with graphql
+  test('should show a row in IndexTable for each fulfillment order', () => {
+    child.find(Button, { id: '123' });
+    // expect(graphQL.operations.all({ mutation: createFulfillmentMutation }));
+    // expect(graphQL).toHavePerformedGraphQLOperation(useFulfillmentCreateV2);
+  });
 
   test('should show a column to add a message on an order', () => {
     expect(child).toContainReactText('Fulfillment Message');
     child.find(Button, { id: '123' });
     expect(child).toContainReactComponent(Modal);
-    // expect(child.find(Modal).prop('open')).toBe(true);
-    // type
-    // console.log(child.find(Modal).find(TextField));
-    // .trigger('onChange', { event: { target: { value: 'test' } } });
-    /// make sure the graphql includes that message
   });
 });
