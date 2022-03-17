@@ -13,13 +13,6 @@ const FULFILLMENT_ORDER_QUERY = gql`
             order {
               id
             }
-            merchantRequests(first: 10) {
-              edges {
-                node {
-                  message
-                }
-              }
-            }
             assignedLocation {
               name
             }

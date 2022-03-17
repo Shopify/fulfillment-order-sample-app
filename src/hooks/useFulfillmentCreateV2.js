@@ -3,8 +3,11 @@ import { gql, useMutation } from '@apollo/client';
 
 export const useFulfillmentCreateV2 = () => {
   const FULFILLMENT_CREATE_MUTATION = gql`
-    mutation fulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {
-      fulfillmentCreateV2(fulfillment: $fulfillment) {
+    mutation fulfillmentCreateV2(
+      $fulfillment: FulfillmentV2Input!
+      $message: String
+    ) {
+      fulfillmentCreateV2(fulfillment: $fulfillment, message: $message) {
         fulfillment {
           id
         }
@@ -18,7 +21,7 @@ export const useFulfillmentCreateV2 = () => {
 
   const [createFulfillmentMutation] = useMutation(FULFILLMENT_CREATE_MUTATION);
   const createFulfillment = useCallback(
-    async (id) => {
+    async ({ id, message }) => {
       const result = await createFulfillmentMutation({
         variables: {
           fulfillment: {
@@ -28,6 +31,7 @@ export const useFulfillmentCreateV2 = () => {
               },
             ],
           },
+          message: message,
         },
       });
       return result;

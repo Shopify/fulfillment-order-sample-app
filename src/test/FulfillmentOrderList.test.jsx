@@ -46,8 +46,9 @@ describe('FulfillmentOrderList', () => {
 
   test('should show a column to add a message on an order', () => {
     expect(child).toContainReactText('Fulfillment Message');
-    child.find(Button, { id: '123' }).trigger('onClick');
+    child.find(Button, { id: '123' });
     expect(child).toContainReactComponent(Modal);
+    // expect(child.find(Modal).prop('open')).toBe(true);
     // type
     // console.log(child.find(Modal).find(TextField));
     // .trigger('onChange', { event: { target: { value: 'test' } } });
