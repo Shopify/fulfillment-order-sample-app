@@ -1,24 +1,8 @@
 import { useCallback } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { FULFILLMENT_CREATE_MUTATION } from '../components/NewFulfillmentOrder/FulfillmentOrderList';
 
 export const useFulfillmentCreateV2 = () => {
-  const FULFILLMENT_CREATE_MUTATION = gql`
-    mutation fulfillmentCreateV2(
-      $fulfillment: FulfillmentV2Input!
-      $message: String
-    ) {
-      fulfillmentCreateV2(fulfillment: $fulfillment, message: $message) {
-        fulfillment {
-          id
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `;
-
   const [createFulfillmentMutation] = useMutation(FULFILLMENT_CREATE_MUTATION);
   const createFulfillment = useCallback(
     async ({ id, message }) => {

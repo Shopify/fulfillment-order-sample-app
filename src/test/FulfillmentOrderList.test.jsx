@@ -1,4 +1,4 @@
-import { FulfillmentOrderList } from '../components/FulfillmentOrderList';
+import { FulfillmentOrderList } from '../components/NewFulfillmentOrder/FulfillmentOrderList';
 import { mount } from '@shopify/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
 import { createGraphQLFactory } from '@shopify/graphql-testing';
@@ -9,7 +9,6 @@ import {
   Modal,
 } from '@shopify/polaris';
 import '@shopify/react-testing/matchers';
-import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
 
 const createGraphQL = createGraphQLFactory();
 describe('FulfillmentOrderList', () => {

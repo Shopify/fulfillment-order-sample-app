@@ -4,10 +4,27 @@ import {
   IndexTable,
   useIndexResourceState,
 } from '@shopify/polaris';
-import { useFulfillmentCreateV2 } from '../hooks/useFulfillmentCreateV2';
+import { useFulfillmentCreateV2 } from '../../hooks/useFulfillmentCreateV2';
 import { useState } from 'react';
 import { Toast } from '@shopify/app-bridge-react';
 import FulfillmentMessageModal from './FulfillmentMessageModal';
+import { gql } from '@apollo/client';
+export const FULFILLMENT_CREATE_MUTATION = gql`
+  mutation fulfillmentCreateV2(
+    $fulfillment: FulfillmentV2Input!
+    $message: String
+  ) {
+    fulfillmentCreateV2(fulfillment: $fulfillment, message: $message) {
+      fulfillment {
+        id
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
 
 export function FulfillmentOrderList({ fulfillmentOrders }) {
   const { createFulfillment } = useFulfillmentCreateV2();

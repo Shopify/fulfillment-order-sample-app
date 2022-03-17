@@ -15,7 +15,7 @@ import translations from '@shopify/polaris/locales/en.json';
 import '@shopify/polaris/build/esm/styles.css';
 
 import { PageLayout } from './components/PageLayout';
-import { FulfillmentOrdersPage } from './components/FulfillmentOrderPage';
+import { FulfillmentOrdersPage } from './components/NewFulfillmentOrder/FulfillmentOrderPage';
 
 export default function App() {
   return (

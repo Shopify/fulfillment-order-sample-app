@@ -66,6 +66,21 @@ export async function createServer(
     }
   });
 
+  app.get('/orders', async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res);
+      const shop = req.query.shop[0];
+      const client = new Shopify.Clients.Rest(shop, session.accessToken);
+      const data = await client.get({
+        path: 'orders',
+        query: { status: 'any' },
+      });
+      return data;
+    } catch (e) {
+      console.log('error', e);
+    }
+  });
+
   app.use((req, res, next) => {
     const shop = req.query.shop;
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {
