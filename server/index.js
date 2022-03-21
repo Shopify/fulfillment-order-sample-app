@@ -69,16 +69,19 @@ export async function createServer(
 
   app.get('/orders', async (req, res) => {
     try {
-      const session = await Shopify.Utils.loadCurrentSession(req, res);
-      const shop = req.query.shop[0];
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      console.log('req.query', req);
+      console.log('session', session);
+      const shop = req.query.shop;
       const client = new Shopify.Clients.Rest(shop, session.accessToken);
       const data = await client.get({
         path: 'orders',
         query: { status: 'any' },
       });
-      return data;
+      res.status(200).send(data);
     } catch (e) {
       console.log('error', e);
+      res.status(500).send(e.message);
     }
   });
 

@@ -16,7 +16,7 @@ import '@shopify/polaris/build/esm/styles.css';
 
 import { PageLayout } from './components/PageLayout';
 import { FulfillmentOrdersPage } from './components/NewFulfillmentOrder/FulfillmentOrderPage';
-
+import { OrderPage } from './components/LegacyFulfillmentOrder/OrderPage';
 export default function App() {
   return (
     <PolarisProvider i18n={translations}>
@@ -30,6 +30,7 @@ export default function App() {
         <MyProvider>
           <PageLayout>
             <FulfillmentOrdersPage />
+            <OrderPage/>
           </PageLayout>
         </MyProvider>
       </AppBridgeProvider>
@@ -51,7 +52,7 @@ function MyProvider({ children }) {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
 
-function userLoggedInFetch(app) {
+ export function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
 
   return async (uri, options) => {
