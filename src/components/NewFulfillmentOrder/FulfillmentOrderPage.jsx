@@ -32,6 +32,7 @@ export function FulfillmentOrdersPage() {
   }
 
   if (error) {
+    console.log("error", error);
     return (
       <Banner status="critical">
         There was an issue loading FulfillmentOrders.
@@ -41,6 +42,7 @@ export function FulfillmentOrdersPage() {
   return (
     <Layout.Section>
       <Card>
+
         <FulfillmentOrderList
           fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
             ({ node }) => node

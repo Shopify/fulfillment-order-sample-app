@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { userLoggedInFetch } from "../../App";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { Card, Layout } from "@shopify/polaris";
+import { OrderList } from "./OrderList";
 
 export function OrderPage() {
     const [orders, setOrders] = useState();
@@ -20,9 +22,12 @@ export function OrderPage() {
     }, [])
 
     return (
-        <div>
-        <h1>Order Page</h1>
-        {orders && orders.map(order =><span> {order.id}</span>)};
-        </div>
+        <Layout.Section>
+        <Card>
+            {orders && <OrderList orders={orders} />}
+            </Card>
+        </Layout.Section>
     );
+
+   
 }

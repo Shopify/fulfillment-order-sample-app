@@ -2,7 +2,7 @@
 import { resolve } from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { Shopify, ApiVersion } from '@shopify/shopify-api';
+import { Shopify, ApiVersion, DataType } from '@shopify/shopify-api';
 import 'dotenv/config';
 
 import applyAuthMiddleware from './middleware/auth.js';
@@ -77,6 +77,25 @@ export async function createServer(
       const data = await client.get({
         path: 'orders',
         query: { status: 'any' },
+      });
+      res.status(200).send(data);
+    } catch (e) {
+      console.log('error', e);
+      res.status(500).send(e.message);
+    }
+  });
+
+  app.post('/orders/:id', async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      console.log('req.query', req);
+      console.log('session', session);
+      const shop = req.query.shop;
+      const client = new Shopify.Clients.Rest(shop, session.accessToken);
+      const data = await client.post({
+        path: 'orders/' + req.params.id + '/fulfillments',
+        data: req.body,
+        type: DataType.JSON
       });
       res.status(200).send(data);
     } catch (e) {
