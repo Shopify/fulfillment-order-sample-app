@@ -28,14 +28,27 @@ export function OrderList({ orders }) {
       });
   };
 
-  const orderListItems = orders.map(({ id }, index) => (
-    <IndexTable.Row id={id} key={id} index={index} selected={false}>
-      <IndexTable.Cell>{id}</IndexTable.Cell>
-      <IndexTable.Cell>a message</IndexTable.Cell>
-      <IndexTable.Cell>
-        <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
-      </IndexTable.Cell>
-    </IndexTable.Row>
+  function isOrderFulfillable(line_items) {
+    const fulfillableLineItems = line_items.filter(
+      (item) => item.fulfillable_quantity >= 1
+    );
+    if (fulfillableLineItems.length === line_items.length) {
+      return true;
+    }
+  }
+
+  const orderListItems = orders.map(({ id, line_items }, index) => (
+    <>
+      {isOrderFulfillable(line_items) && (
+        <IndexTable.Row id={id} key={id} index={index} selected={false}>
+          <IndexTable.Cell>{id}</IndexTable.Cell>
+          <IndexTable.Cell>a message</IndexTable.Cell>
+          <IndexTable.Cell>
+            <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
+          </IndexTable.Cell>
+        </IndexTable.Row>
+      )}
+    </>
   ));
   return (
     <>
