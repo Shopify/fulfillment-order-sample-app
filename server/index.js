@@ -85,6 +85,7 @@ export async function createServer(
     }
   });
 
+  app.use(express.json());
   app.post('/orders/:id', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
@@ -95,7 +96,7 @@ export async function createServer(
       const data = await client.post({
         path: 'orders/' + req.params.id + '/fulfillments',
         data: req.body,
-        type: DataType.JSON
+        type: DataType.JSON,
       });
       res.status(200).send(data);
     } catch (e) {
