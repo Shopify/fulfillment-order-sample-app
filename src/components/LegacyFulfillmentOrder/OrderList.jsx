@@ -4,28 +4,40 @@ import { useAppBridge, Toast } from '@shopify/app-bridge-react';
 import { useState } from 'react';
 
 export function OrderList({ orders }) {
-  console.log(orders);
   const app = useAppBridge();
-  const [showError, setShowError] = useState(false);
+
+  const [showMessage, setShowMessage] = useState({
+    message: '',
+    show: false,
+    error: false,
+  });
 
   const fulfillOrders = async (id) => {
     const authFetch = userLoggedInFetch(app);
-    authFetch(`/orders/${id}?shop=megans-very-cool-store.myshopify.com/`, {
-      method: 'POST',
-      body: JSON.stringify({ fulfillment: { location_id: 67847880927 } }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => {
-        if (response.status !== 200) {
-          setShowError(true);
-        }
-      })
-      .catch((error) => {
-        setShowError(true);
-        console.log(error);
+    const res = await authFetch(
+      `/orders/${id}?shop=megans-very-cool-store.myshopify.com/`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ fulfillment: { location_id: 67847880927 } }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (res.status === 200) {
+      setShowMessage({
+        message: 'Order was fulfilled successfully',
+        show: true,
+        error: false,
       });
+    } else {
+      const jsonData = await res.json();
+      setShowMessage({
+        message: jsonData.message,
+        show: true,
+        error: true,
+      });
+    }
   };
 
   function isOrderFulfillable(line_items) {
@@ -37,26 +49,27 @@ export function OrderList({ orders }) {
     }
   }
 
-  const orderListItems = orders.map(({ id, line_items }, index) => (
-    <>
-      {isOrderFulfillable(line_items) && (
-        <IndexTable.Row id={id} key={id} index={index} selected={false}>
+  const orderListItems = orders.map(
+    ({ id, line_items }, index) =>
+      isOrderFulfillable(line_items) && (
+        <IndexTable.Row id={id} key={index} index={index} selected={false}>
           <IndexTable.Cell>{id}</IndexTable.Cell>
           <IndexTable.Cell>a message</IndexTable.Cell>
           <IndexTable.Cell>
             <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
           </IndexTable.Cell>
         </IndexTable.Row>
-      )}
-    </>
-  ));
+      )
+  );
   return (
     <>
-      {showError && (
+      {showMessage.show && (
         <Toast
-          content="Error - Not able to fulfill order"
-          error
-          onDismiss={() => setShowError(false)}
+          content={showMessage.message}
+          error={showMessage.error}
+          onDismiss={() =>
+            setShowMessage({ message: '', show: false, error: false })
+          }
         />
       )}
 
@@ -64,7 +77,7 @@ export function OrderList({ orders }) {
         <IndexTable
           resourceName={{ singular: 'order', plural: 'orders' }}
           itemCount={orders.length}
-          onSelectionChange=""
+          onSelectionChange={() => {}}
           headings={[
             { title: 'Order ID' },
             { title: 'Fulfillment Message' },

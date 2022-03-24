@@ -11,14 +11,13 @@ export function OrderPage() {
   useEffect(async () => {
     /// data loading
     const authFetch = userLoggedInFetch(app);
-    authFetch('/orders?shop=megans-very-cool-store.myshopify.com/')
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data.body.orders);
-        console.log(data.body.orders);
-      });
-    // console.log(res);
-    // set the res to some sate
+    const res = await authFetch(
+      '/orders?shop=megans-very-cool-store.myshopify.com/'
+    );
+    const resJson = await res.json();
+    if (resJson) {
+      setOrders(resJson.body.orders);
+    }
   }, []);
 
   return (

@@ -89,8 +89,6 @@ export async function createServer(
   app.post('/orders/:id', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-      console.log('req.query', req);
-      console.log('session', session);
       const shop = req.query.shop;
       const client = new Shopify.Clients.Rest(shop, session.accessToken);
       const data = await client.post({
@@ -100,8 +98,9 @@ export async function createServer(
       });
       res.status(200).send(data);
     } catch (e) {
-      console.log('error', e);
-      res.status(500).send(e.message);
+      res
+        .status(500)
+        .send({ message: 'There was an error fulfilling the order' });
     }
   });
 
