@@ -1,15 +1,9 @@
-import {
-  Card,
-  Button,
-  IndexTable,
-  useIndexResourceState,
-} from '@shopify/polaris';
-import { useFulfillmentCreateV2 } from '../../hooks/useFulfillmentCreateV2';
+import { Card, Button, IndexTable } from '@shopify/polaris';
 import { useState } from 'react';
 import { Toast } from '@shopify/app-bridge-react';
 import FulfillmentMessageModal from './FulfillmentMessageModal';
-import { gql } from '@apollo/client';
-export const FULFILLMENT_CREATE_MUTATION = gql`
+import { gql, useMutation } from '@apollo/client';
+const FULFILLMENT_CREATE_MUTATION = gql`
   mutation fulfillmentCreateV2(
     $fulfillment: FulfillmentV2Input!
     $message: String
@@ -27,16 +21,11 @@ export const FULFILLMENT_CREATE_MUTATION = gql`
 `;
 
 export function FulfillmentOrderList({ fulfillmentOrders }) {
-  const { createFulfillment } = useFulfillmentCreateV2();
-
+  const [createFulfillment, { error }] = useMutation(
+    FULFILLMENT_CREATE_MUTATION
+  );
   const [fulfillmentOrdersState, setFulfillmentOrdersState] =
     useState(fulfillmentOrders);
-
-  const { selectedResources, handleSelectionChange } = useIndexResourceState(
-    fulfillmentOrdersState
-  );
-
-  const [showError, setShowError] = useState(false);
 
   const [modalState, setModalState] = useState({
     open: false,
@@ -58,25 +47,24 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
     if (modalState.fulfillmentId === id) {
       message = modalState.message;
     }
-    const result = await createFulfillment({
-      id,
-      message,
+    const { data } = await createFulfillment({
+      variables: {
+        fulfillment: {
+          lineItemsByFulfillmentOrder: [
+            {
+              fulfillmentOrderId: id,
+            },
+          ],
+        },
+        message,
+      },
     });
-    if (result.data.fulfillmentCreateV2?.userErrors.length) {
-      setShowError(true);
-      return;
-    }
-    removeFulfillmentItemFromList(id);
+    if (data) removeFulfillmentItemFromList(id);
   };
 
   const fulfillmentOrderListItems = fulfillmentOrdersState.map(
     ({ id, assignedLocation, order }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        position={index}
-        selected={selectedResources.includes(id)}
-      >
+      <IndexTable.Row id={id} key={id} position={index} selected={false}>
         <IndexTable.Cell>{id}</IndexTable.Cell>
         <IndexTable.Cell>{order.id}</IndexTable.Cell>
         <IndexTable.Cell>{assignedLocation.name}</IndexTable.Cell>
@@ -104,12 +92,12 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
 
   return (
     <>
-      {showError && (
+      {error && (
         <>
           <Toast
             content="Error - not able to perform mutation"
             error
-            onDismiss={() => setShowError(false)}
+            onDismiss={() => {}}
           />
         </>
       )}
@@ -126,7 +114,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
             plural: 'Fulfillment Orders',
           }}
           itemCount={Object.keys(fulfillmentOrdersState).length}
-          onSelectionChange={handleSelectionChange}
+          onSelectionChange={() => {}}
           headings={[
             { title: 'Fulfillment Order ID' },
             { title: 'Order ID' },
