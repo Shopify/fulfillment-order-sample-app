@@ -36,7 +36,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const removeFulfillmentItemFromList = (idsToRemove) => {
     setFulfillmentOrdersState((prev) => {
       const itemsNotFulfilled = prev.filter(
-        (order) => !idsToRemove.includes(order.id)
+        (order) => !idsToRemove.includes(order.legacyResourceId)
       );
       return itemsNotFulfilled;
     });
@@ -66,7 +66,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
     ({ id, assignedLocation, order }, index) => (
       <IndexTable.Row id={id} key={id} position={index} selected={false}>
         <IndexTable.Cell>{id}</IndexTable.Cell>
-        <IndexTable.Cell>{order.id}</IndexTable.Cell>
+        <IndexTable.Cell>{order.legacyResourceId}</IndexTable.Cell>
         <IndexTable.Cell>{assignedLocation.name}</IndexTable.Cell>
         <IndexTable.Cell>
           {modalState.fulfillmentId === id && modalState.message !== '' ? (

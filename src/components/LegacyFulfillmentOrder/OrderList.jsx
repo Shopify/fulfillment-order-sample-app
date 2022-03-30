@@ -39,7 +39,6 @@ export function OrderList({ orders, setOrdersCallback }) {
   const orderListItems = orders.map(({ id }, index) => (
     <IndexTable.Row id={id} key={index} index={index} selected={false}>
       <IndexTable.Cell>{id}</IndexTable.Cell>
-      <IndexTable.Cell>a message</IndexTable.Cell>
       <IndexTable.Cell>
         <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
       </IndexTable.Cell>
@@ -62,11 +61,7 @@ export function OrderList({ orders, setOrdersCallback }) {
           resourceName={{ singular: 'order', plural: 'orders' }}
           itemCount={orders.length}
           onSelectionChange={() => {}}
-          headings={[
-            { title: 'Order ID' },
-            { title: 'Fulfillment Message' },
-            { title: 'Fulfill Now' },
-          ]}
+          headings={[{ title: 'Order ID' }, { title: 'Fulfill Now' }]}
         >
           {orderListItems}
         </IndexTable>
