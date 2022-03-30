@@ -36,7 +36,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const removeFulfillmentItemFromList = (idsToRemove) => {
     setFulfillmentOrdersState((prev) => {
       const itemsNotFulfilled = prev.filter(
-        (order) => !idsToRemove.includes(order.legacyResourceId)
+        (fulfillmentOrder) => !idsToRemove.includes(fulfillmentOrder.id)
       );
       return itemsNotFulfilled;
     });
