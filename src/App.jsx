@@ -29,7 +29,10 @@ export default function App() {
       >
         <MyProvider>
           <PageLayout>
+            {/* This component highlights the Shopify GQL Admin API using the fulfillmentOrder object */}
             <FulfillmentOrdersPage />
+
+            {/* This component shows the deprecated Shopify Rest Admin API using fulfillments on the Order object */}
             <OrderPage />
           </PageLayout>
         </MyProvider>
@@ -38,6 +41,8 @@ export default function App() {
   );
 }
 
+// The follow code is cloned from the shopify app starter template: https://github.com/Shopify/shopify-app-node
+// It points the apollo client to our server defined at serve/index.js
 function MyProvider({ children }) {
   const app = useAppBridge();
 

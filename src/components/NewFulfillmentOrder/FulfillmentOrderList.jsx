@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { Toast } from '@shopify/app-bridge-react';
 import FulfillmentMessageModal from './FulfillmentMessageModal';
 import { gql, useMutation } from '@apollo/client';
+/*
+ * This mutation is used to fulfill a fulfillmentOrder, and adds a fulfillment message if applicable.
+ */
 const FULFILLMENT_CREATE_MUTATION = gql`
   mutation fulfillmentCreateV2(
     $fulfillment: FulfillmentV2Input!
@@ -24,14 +27,10 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
   const [createFulfillment, { error }] = useMutation(
     FULFILLMENT_CREATE_MUTATION
   );
+
+  // store the fulfillmentOrders in state so when they are fulfilled they can be removed from the view.
   const [fulfillmentOrdersState, setFulfillmentOrdersState] =
     useState(fulfillmentOrders);
-
-  const [modalState, setModalState] = useState({
-    open: false,
-    fulfillmentId: null,
-    message: '',
-  });
 
   const removeFulfillmentItemFromList = (idsToRemove) => {
     setFulfillmentOrdersState((prev) => {
@@ -42,11 +41,19 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
     });
   };
 
+  const [modalState, setModalState] = useState({
+    open: false,
+    fulfillmentId: null,
+    message: '',
+  });
+
   const fulfillItems = async (id) => {
+    // if a message as been added from the modal, we need to pass it to the mutation.
     let message = '';
     if (modalState.fulfillmentId === id) {
       message = modalState.message;
     }
+    // the following performs the mutation to fulfill the fulfillment order.
     const { data } = await createFulfillment({
       variables: {
         fulfillment: {

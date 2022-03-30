@@ -4,6 +4,11 @@ import { Banner, Card, Layout } from '@shopify/polaris';
 import { userLoggedInFetch } from '../../App';
 import { FulfillmentOrderList } from './FulfillmentOrderList';
 
+/*
+ * This component shows the fulfillment orders for the current shop.
+ * This querys the shop to fetch the first 10 fulfillment orders.
+ * We are returning the order object and the legacy resource id which maps to the REST order id.
+ */
 const FULFILLMENT_ORDER_QUERY = gql`
   {
     shop {
@@ -41,6 +46,7 @@ export function FulfillmentOrdersPage() {
   return (
     <Layout.Section>
       <Card>
+        {/* We pass in the fulfillmentOrders to child component in order to display them in list view. */}
         <FulfillmentOrderList
           fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
             ({ node }) => node
