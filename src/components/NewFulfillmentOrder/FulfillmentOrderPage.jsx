@@ -8,6 +8,8 @@ import { FulfillmentOrderList } from './FulfillmentOrderList';
  * This component shows the fulfillment orders for the current shop.
  * This querys the shop to fetch the first 10 fulfillment orders.
  * We are returning the order object and the legacy resource id which maps to the REST order id.
+ *
+ * You could extract all the api logic to hooks for a production app, but we choose to keep everything in the same file for simplicity.
  */
 const FULFILLMENT_ORDER_QUERY = gql`
   {

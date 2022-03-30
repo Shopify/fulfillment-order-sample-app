@@ -1,9 +1,10 @@
-# Shopify App Node
+# Shopify Reference - Fulfillment App
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 
 This is an reference app to show how the Shopify GQL Admin API fulfillmentOrder
-object can be used.
+object can be used. When using this code keep in mind: This is a sample
+application. It is not production-ready, many edge cases are not covered.
 
 It leverages the
 [Shopify API Library](https://github.com/Shopify/shopify-node-api) on the
@@ -13,7 +14,7 @@ and [Polaris](https://github.com/Shopify/polaris-react) and
 [App Bridge React](https://shopify.dev/tools/app-bridge/react-components) on the
 frontend.
 
-This is the repository used when you create a new Node app with the
+This is the bases on the Node app generated with the
 [Shopify CLI](https://shopify.dev/apps/tools/cli).
 
 ## Requirements
