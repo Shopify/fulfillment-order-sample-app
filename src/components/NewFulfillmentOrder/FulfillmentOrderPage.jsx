@@ -37,6 +37,7 @@ export function FulfillmentOrdersPage() {
   }
 
   if (error) {
+    console.log('Error when retrieving fulfillment orders: ', error);
     return (
       <Banner status="critical">
         There was an issue loading FulfillmentOrders.
@@ -44,15 +45,18 @@ export function FulfillmentOrdersPage() {
     );
   }
   return (
-    <Layout.Section>
-      <Card>
-        {/* We pass in the fulfillmentOrders to child component in order to display them in list view. */}
-        <FulfillmentOrderList
-          fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
-            ({ node }) => node
-          )}
-        />
-      </Card>
-    </Layout.Section>
+    console.log('FulfillmentOrders: ', data),
+    (
+      <Layout.Section>
+        <Card>
+          {/* We pass in the fulfillmentOrders to child component in order to display them in list view. */}
+          <FulfillmentOrderList
+            fulfillmentOrders={data.shop.fulfillmentOrders.edges.map(
+              ({ node }) => node
+            )}
+          />
+        </Card>
+      </Layout.Section>
+    )
   );
 }

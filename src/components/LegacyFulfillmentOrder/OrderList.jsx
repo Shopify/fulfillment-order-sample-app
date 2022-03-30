@@ -10,6 +10,8 @@ export function OrderList({ orders, setOrdersCallback }) {
     error: false,
   });
   const app = useAppBridge();
+
+  //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
     const authFetch = userLoggedInFetch(app);
     const res = await authFetch(`/orders/${id}`, {
@@ -19,13 +21,15 @@ export function OrderList({ orders, setOrdersCallback }) {
         'Content-Type': 'application/json',
       },
     });
-    if (res.status === 200) {
+    if (res.ok) {
+      //If the order was fulfilled successfully, calls the parent component to remove the order from the list of orders to be fulfilled
       setOrdersCallback(id);
       setShowMessage({
         message: 'Order was fulfilled successfully',
         show: true,
         error: false,
       });
+      console.log('Fulfillment successful: ', id);
     } else {
       const jsonData = await res.json();
       setShowMessage({
@@ -33,6 +37,7 @@ export function OrderList({ orders, setOrdersCallback }) {
         show: true,
         error: true,
       });
+      console.log('Fulfillment failed: ', jsonData);
     }
   };
 

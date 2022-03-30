@@ -57,6 +57,7 @@ export async function createServer(
     }
   });
 
+  // This endpoint will forward GraphQL requests to the Shopify GraphQL Admin API
   app.post('/graphql', async (req, res) => {
     try {
       const response = await Shopify.Utils.graphqlProxy(req, res);
@@ -67,6 +68,7 @@ export async function createServer(
     }
   });
 
+  //Retrieves the shops orders
   app.get('/orders', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
@@ -84,6 +86,8 @@ export async function createServer(
   });
 
   app.use(express.json());
+
+  // Create a fulfillment by order id
   app.post('/orders/:id', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);

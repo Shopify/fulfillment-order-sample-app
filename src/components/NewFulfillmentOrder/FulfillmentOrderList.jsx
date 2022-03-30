@@ -66,7 +66,10 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
         message,
       },
     });
-    if (data) removeFulfillmentItemFromList(id);
+    if (data) {
+      removeFulfillmentItemFromList(id);
+      console.log('Fulfilled Fulfillment Order: ', data);
+    }
   };
 
   const fulfillmentOrderListItems = fulfillmentOrdersState.map(
