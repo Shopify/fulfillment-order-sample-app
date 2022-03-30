@@ -70,9 +70,7 @@ export async function createServer(
   app.get('/orders', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-      console.log('req.query', req);
-      console.log('session', session);
-      const shop = req.query.shop;
+      const shop = session.shop;
       const client = new Shopify.Clients.Rest(shop, session.accessToken);
       const data = await client.get({
         path: 'orders',
@@ -89,7 +87,7 @@ export async function createServer(
   app.post('/orders/:id', async (req, res) => {
     try {
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-      const shop = req.query.shop;
+      const shop = session.shop;
       const client = new Shopify.Clients.Rest(shop, session.accessToken);
       const data = await client.post({
         path: 'orders/' + req.params.id + '/fulfillments',

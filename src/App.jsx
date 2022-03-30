@@ -30,7 +30,7 @@ export default function App() {
         <MyProvider>
           <PageLayout>
             <FulfillmentOrdersPage />
-            <OrderPage/>
+            <OrderPage />
           </PageLayout>
         </MyProvider>
       </AppBridgeProvider>
@@ -52,7 +52,7 @@ function MyProvider({ children }) {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
 
- export function userLoggedInFetch(app) {
+export function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
 
   return async (uri, options) => {

@@ -7,22 +7,38 @@ import { OrderList } from './OrderList';
 export function OrderPage() {
   const [orders, setOrders] = useState();
   const app = useAppBridge();
-
   useEffect(async () => {
-    /// data loading
     const authFetch = userLoggedInFetch(app);
-    const res = await authFetch(
-      '/orders?shop=megans-very-cool-store.myshopify.com/'
-    );
-    const resJson = await res.json();
-    if (resJson) {
-      setOrders(resJson.body.orders);
+    const res = await authFetch('/orders');
+    if (res.ok) {
+      const resJson = await res.json();
+
+      const fulfillableOrders = resJson.body.orders.filter(
+        ({ line_items }) => isOrderFulfillable(line_items) === true
+      );
+      setOrders(fulfillableOrders);
     }
   }, []);
 
+  function isOrderFulfillable(line_items) {
+    const fulfillableLineItems = line_items.filter(
+      ({ fulfillable_quantity }) => fulfillable_quantity >= 1
+    );
+    if (fulfillableLineItems.length === line_items.length) return true;
+    else return false;
+  }
+
+  function removeOrder(orderToRemoveId) {
+    setOrders(orders.filter(({ id: orderId }) => orderId !== orderToRemoveId));
+  }
+
   return (
     <Layout.Section>
-      <Card>{orders && <OrderList orders={orders} />}</Card>
+      <Card>
+        {orders && (
+          <OrderList orders={orders} setOrdersCallback={removeOrder} />
+        )}
+      </Card>
     </Layout.Section>
   );
 }

@@ -3,28 +3,24 @@ import { userLoggedInFetch } from '../../App';
 import { useAppBridge, Toast } from '@shopify/app-bridge-react';
 import { useState } from 'react';
 
-export function OrderList({ orders }) {
-  const app = useAppBridge();
-
+export function OrderList({ orders, setOrdersCallback }) {
   const [showMessage, setShowMessage] = useState({
     message: '',
     show: false,
     error: false,
   });
-
+  const app = useAppBridge();
   const fulfillOrders = async (id) => {
     const authFetch = userLoggedInFetch(app);
-    const res = await authFetch(
-      `/orders/${id}?shop=megans-very-cool-store.myshopify.com/`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ fulfillment: { location_id: 67847880927 } }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const res = await authFetch(`/orders/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ fulfillment: { location_id: 67847880927 } }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     if (res.status === 200) {
+      setOrdersCallback(id);
       setShowMessage({
         message: 'Order was fulfilled successfully',
         show: true,
@@ -40,27 +36,15 @@ export function OrderList({ orders }) {
     }
   };
 
-  function isOrderFulfillable(line_items) {
-    const fulfillableLineItems = line_items.filter(
-      (item) => item.fulfillable_quantity >= 1
-    );
-    if (fulfillableLineItems.length === line_items.length) {
-      return true;
-    }
-  }
-
-  const orderListItems = orders.map(
-    ({ id, line_items }, index) =>
-      isOrderFulfillable(line_items) && (
-        <IndexTable.Row id={id} key={index} index={index} selected={false}>
-          <IndexTable.Cell>{id}</IndexTable.Cell>
-          <IndexTable.Cell>a message</IndexTable.Cell>
-          <IndexTable.Cell>
-            <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
-          </IndexTable.Cell>
-        </IndexTable.Row>
-      )
-  );
+  const orderListItems = orders.map(({ id }, index) => (
+    <IndexTable.Row id={id} key={index} index={index} selected={false}>
+      <IndexTable.Cell>{id}</IndexTable.Cell>
+      <IndexTable.Cell>a message</IndexTable.Cell>
+      <IndexTable.Cell>
+        <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  ));
   return (
     <>
       {showMessage.show && (
