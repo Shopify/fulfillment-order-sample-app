@@ -19,11 +19,13 @@ export default function FulfillmentMessageModal({ open, saveMessage }) {
         },
       ]}
     >
+      <Modal.Section>
       <TextField
         label="Fulfillment Message"
         value={message}
         onChange={setMessage}
       />
+      </Modal.Section>
     </Modal>
   );
 }
