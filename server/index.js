@@ -106,6 +106,21 @@ export async function createServer(
     }
   });
 
+  // For the legacy flow in order to fulfill an order, you need to know the location ID of the fulfillment. Here we get the locations for the shop, and default to the first one.
+  app.get('/location', async (req, res) => {
+    try {
+      const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+      const shop = session.shop;
+      const client = new Shopify.Clients.Rest(shop, session.accessToken);
+      const data = await client.get({
+        path: 'locations',
+      });
+      res.status(200).send(data.body.locations[0]);
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
+  });
+
   app.use((req, res, next) => {
     const shop = req.query.shop;
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {

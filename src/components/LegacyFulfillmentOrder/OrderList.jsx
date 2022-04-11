@@ -1,22 +1,38 @@
 import { Button, Card, IndexTable } from '@shopify/polaris';
 import { userLoggedInFetch } from '../../App';
 import { useAppBridge, Toast } from '@shopify/app-bridge-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function OrderList({ orders, setOrdersCallback }) {
+  const app = useAppBridge();
+  const authFetch = userLoggedInFetch(app);
+  const [location, setLocation] = useState('');
+
+  useEffect(async () => {
+    const res = await authFetch('/location', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (res.ok) {
+      const jsonData = await res.json();
+      setLocation(jsonData.id);
+    } else {
+      console.log(`Problem fetching location data: ${res.statusText}`);
+    }
+  }, []);
+
   const [showMessage, setShowMessage] = useState({
     message: '',
     show: false,
     error: false,
   });
-  const app = useAppBridge();
 
   //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
-    const authFetch = userLoggedInFetch(app);
     const res = await authFetch(`/orders/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ fulfillment: { location_id: 67847880927 } }),
+      body: JSON.stringify({ fulfillment: { location_id: location } }),
       headers: {
         'Content-Type': 'application/json',
       },
