@@ -132,6 +132,7 @@ export function FulfillmentOrderList({ fulfillmentOrders }) {
             { title: 'Fulfillment Message' },
             { title: 'Fulfill Now' },
           ]}
+          lastColumnSticky={false}
         >
           {fulfillmentOrderListItems}
         </IndexTable>
