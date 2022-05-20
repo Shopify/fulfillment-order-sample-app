@@ -1,6 +1,7 @@
 import { Button, Card, IndexTable } from '@shopify/polaris';
 import { userLoggedInFetch } from '../../App';
 import { useAppBridge, Toast } from '@shopify/app-bridge-react';
+import FulfillmentMessageModal from '../NewFulfillmentOrder/FulfillmentMessageModal';
 import { useEffect, useState } from 'react';
 
 export function OrderList({ orders, setOrdersCallback }) {
@@ -28,6 +29,12 @@ export function OrderList({ orders, setOrdersCallback }) {
     error: false,
   });
 
+  const [modalState, setModalState] = useState({
+    open: false,
+    fulfillmentId: null,
+    message: '',
+  });
+
   //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
     const res = await authFetch(`/orders/${id}`, {
@@ -45,6 +52,20 @@ export function OrderList({ orders, setOrdersCallback }) {
         show: true,
         error: false,
       });
+      const fulfillOrders = async (id) => {
+        const res = await authFetch(`/orders/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ order: { note: message } }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (res.ok) {
+          console.log('Order note updated successfully');
+        } else {
+          console.log('Problem updating order note');
+        }
+      };
       console.log('Fulfillment successful: ', id);
     } else {
       const jsonData = await res.json();
@@ -76,7 +97,12 @@ export function OrderList({ orders, setOrdersCallback }) {
           }
         />
       )}
-
+      <FulfillmentMessageModal
+        open={modalState.open}
+        saveMessage={(message) =>
+          setModalState({ ...modalState, open: false, message })
+        }
+      />
       <Card>
         <IndexTable
           resourceName={{ singular: 'order', plural: 'orders' }}
