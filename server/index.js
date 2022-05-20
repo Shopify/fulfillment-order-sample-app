@@ -100,9 +100,10 @@ export async function createServer(
       });
       res.status(200).send(data);
     } catch (e) {
-      res
-        .status(500)
-        .send({ message: 'There was an error fulfilling the order' });
+      console.log(e.message);
+      res.status(500).send({
+        message: `There was an error fulfilling the order: ${e.message}`,
+      });
     }
   });
 
@@ -120,6 +121,7 @@ export async function createServer(
       });
       res.status(200).send(data);
     } catch (e) {
+      console.log(e);
       res
         .status(500)
         .send({ message: 'There was an error updating the order' });

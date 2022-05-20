@@ -35,6 +35,22 @@ export function OrderList({ orders, setOrdersCallback }) {
     message: '',
   });
 
+  const addOrderNoteToFulfillment = async (id) => {
+    const orderNoteRes = await authFetch(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ order: { note: modalState.message } }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (orderNoteRes.ok) {
+      console.log('Order note updated successfully');
+      return Promise.resolve();
+    } else {
+      const orderNoteRes = await res.json();
+      return Promise.reject(orderNoteRes.message);
+    }
+  };
   //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
     const res = await authFetch(`/orders/${id}`, {
@@ -47,26 +63,31 @@ export function OrderList({ orders, setOrdersCallback }) {
     if (res.ok) {
       //If the order was fulfilled successfully, calls the parent component to remove the order from the list of orders to be fulfilled
       setOrdersCallback(id);
-      setShowMessage({
-        message: 'Order was fulfilled successfully',
-        show: true,
-        error: false,
-      });
-      const fulfillOrders = async (id) => {
-        const res = await authFetch(`/orders/${id}`, {
-          method: 'PUT',
-          body: JSON.stringify({ order: { note: message } }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        if (res.ok) {
-          console.log('Order note updated successfully');
-        } else {
-          console.log('Problem updating order note');
-        }
-      };
-      console.log('Fulfillment successful: ', id);
+
+      if (modalState.message) {
+        // If the order is fulfilled successfully, we make a second call to add the note to the order.
+        await addOrderNoteToFulfillment(id)
+          .then(() => {
+            console.log('Fulfillment successful: ', id);
+            //reset the state of the message modal
+            setModalState({ ...modalState, message: '' });
+
+            setShowMessage({
+              message: 'Order was fulfilled successfully',
+              show: true,
+              error: false,
+            });
+          })
+          .catch((err) => {
+            console.log('Problem updating order note', err);
+            setShowMessage({
+              message: err,
+              show: true,
+              error: true,
+            });
+            console.log('Order Note Failed ', jsonData);
+          });
+      }
     } else {
       const jsonData = await res.json();
       setShowMessage({
@@ -81,6 +102,19 @@ export function OrderList({ orders, setOrdersCallback }) {
   const orderListItems = orders.map(({ id }, index) => (
     <IndexTable.Row id={id} key={index} index={index} selected={false}>
       <IndexTable.Cell>{id}</IndexTable.Cell>
+      <IndexTable.Cell>
+        {modalState.fulfillmentId === id && modalState.message !== '' ? (
+          <span> {modalState.message} </span>
+        ) : (
+          <Button
+            onClick={() =>
+              setModalState({ open: true, fulfillmentId: id, message: '' })
+            }
+          >
+            Add Message
+          </Button>
+        )}
+      </IndexTable.Cell>
       <IndexTable.Cell>
         <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
       </IndexTable.Cell>
