@@ -35,27 +35,24 @@ export function OrderList({ orders, setOrdersCallback }) {
     message: '',
   });
 
-  const addOrderNoteToFulfillment = async (id) => {
-    const orderNoteRes = await authFetch(`/orders/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ order: { note: modalState.message } }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (orderNoteRes.ok) {
-      console.log('Order note updated successfully');
-      return Promise.resolve();
+  function createRequestBody() {
+    if (modalState.message) {
+      return JSON.stringify({
+        fulfillment: { location_id: location },
+        order: { note: modalState.message },
+      });
     } else {
-      const orderNoteRes = await res.json();
-      return Promise.reject(orderNoteRes.message);
+      return JSON.stringify({
+        fulfillment: { location_id: location },
+      });
     }
-  };
+  }
+
   //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
     const res = await authFetch(`/orders/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ fulfillment: { location_id: location } }),
+      body: createRequestBody(),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -64,30 +61,16 @@ export function OrderList({ orders, setOrdersCallback }) {
       //If the order was fulfilled successfully, calls the parent component to remove the order from the list of orders to be fulfilled
       setOrdersCallback(id);
 
-      if (modalState.message) {
-        // If the order is fulfilled successfully, we make a second call to add the note to the order.
-        await addOrderNoteToFulfillment(id)
-          .then(() => {
-            console.log('Fulfillment successful: ', id);
-            //reset the state of the message modal
-            setModalState({ ...modalState, message: '' });
+      setShowMessage({
+        message: `Order was fulfilled successfully ${
+          modalState.message ? `with message: ${modalState.message}` : ''
+        }`,
+        show: true,
+        error: false,
+      });
 
-            setShowMessage({
-              message: 'Order was fulfilled successfully',
-              show: true,
-              error: false,
-            });
-          })
-          .catch((err) => {
-            console.log('Problem updating order note', err);
-            setShowMessage({
-              message: err,
-              show: true,
-              error: true,
-            });
-            console.log('Order Note Failed ', jsonData);
-          });
-      }
+      //reset the state of the message modal
+      setModalState({ ...modalState, message: '' });
     } else {
       const jsonData = await res.json();
       setShowMessage({
