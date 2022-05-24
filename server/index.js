@@ -93,17 +93,29 @@ export async function createServer(
       const session = await Shopify.Utils.loadCurrentSession(req, res, true);
       const shop = session.shop;
       const client = new Shopify.Clients.Rest(shop, session.accessToken);
-      const data = await client.post({
+
+      await client.post({
         path: 'orders/' + req.params.id + '/fulfillments',
-        data: req.body,
+        data: { fulfillment: req.body.fulfillment },
         type: DataType.JSON,
       });
-      res.status(200).send(data);
+
+      // check if there is a note in the request body
+      if (req.body.order) {
+        // Add a note to an order to represent a fulfillment message
+        await client.put({
+          path: 'orders/' + req.params.id,
+          data: { order: req.body.order },
+          type: DataType.JSON,
+        });
+      }
     } catch (e) {
-      res
-        .status(500)
-        .send({ message: 'There was an error fulfilling the order' });
+      console.log(e.message);
+      res.status(500).send({
+        message: `There was an error fulfilling the order: ${e.message}`,
+      });
     }
+    res.status(200).send();
   });
 
   // For the legacy flow in order to fulfill an order, you need to know the location ID of the fulfillment. Here we get the locations for the shop, and default to the first one.

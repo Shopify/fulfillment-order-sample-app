@@ -1,6 +1,7 @@
 import { Button, Card, IndexTable } from '@shopify/polaris';
 import { userLoggedInFetch } from '../../App';
 import { useAppBridge, Toast } from '@shopify/app-bridge-react';
+import FulfillmentMessageModal from '../NewFulfillmentOrder/FulfillmentMessageModal';
 import { useEffect, useState } from 'react';
 
 export function OrderList({ orders, setOrdersCallback }) {
@@ -28,11 +29,30 @@ export function OrderList({ orders, setOrdersCallback }) {
     error: false,
   });
 
+  const [modalState, setModalState] = useState({
+    open: false,
+    fulfillmentId: null,
+    message: '',
+  });
+
+  function createRequestBody() {
+    if (modalState.message) {
+      return JSON.stringify({
+        fulfillment: { location_id: location },
+        order: { note: modalState.message },
+      });
+    } else {
+      return JSON.stringify({
+        fulfillment: { location_id: location },
+      });
+    }
+  }
+
   //Makes API call to the server to fulfill an order specified by the id, using /orders/id/fulfillment endpoint
   const fulfillOrders = async (id) => {
     const res = await authFetch(`/orders/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ fulfillment: { location_id: location } }),
+      body: createRequestBody(),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -40,12 +60,17 @@ export function OrderList({ orders, setOrdersCallback }) {
     if (res.ok) {
       //If the order was fulfilled successfully, calls the parent component to remove the order from the list of orders to be fulfilled
       setOrdersCallback(id);
+
       setShowMessage({
-        message: 'Order was fulfilled successfully',
+        message: `Order was fulfilled successfully ${
+          modalState.message ? `with message: ${modalState.message}` : ''
+        }`,
         show: true,
         error: false,
       });
-      console.log('Fulfillment successful: ', id);
+
+      //reset the state of the message modal
+      setModalState({ ...modalState, message: '' });
     } else {
       const jsonData = await res.json();
       setShowMessage({
@@ -60,6 +85,19 @@ export function OrderList({ orders, setOrdersCallback }) {
   const orderListItems = orders.map(({ id }, index) => (
     <IndexTable.Row id={id} key={index} index={index} selected={false}>
       <IndexTable.Cell>{id}</IndexTable.Cell>
+      <IndexTable.Cell>
+        {modalState.fulfillmentId === id && modalState.message !== '' ? (
+          <span> {modalState.message} </span>
+        ) : (
+          <Button
+            onClick={() =>
+              setModalState({ open: true, fulfillmentId: id, message: '' })
+            }
+          >
+            Add Message
+          </Button>
+        )}
+      </IndexTable.Cell>
       <IndexTable.Cell>
         <Button onClick={() => fulfillOrders(id)}>Fulfill</Button>
       </IndexTable.Cell>
@@ -76,7 +114,12 @@ export function OrderList({ orders, setOrdersCallback }) {
           }
         />
       )}
-
+      <FulfillmentMessageModal
+        open={modalState.open}
+        saveMessage={(message) =>
+          setModalState({ ...modalState, open: false, message })
+        }
+      />
       <Card>
         <IndexTable
           resourceName={{ singular: 'order', plural: 'orders' }}
