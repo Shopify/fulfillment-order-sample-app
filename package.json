@@ -26,7 +26,7 @@
     "@shopify/graphql-testing": "^5.1.9",
     "@shopify/polaris": "^9.0.0",
     "@shopify/react-testing": "^3.3.9",
-    "@shopify/shopify-api": "^3.0.0-rc.1",
+    "@shopify/shopify-api": "^6.0.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
