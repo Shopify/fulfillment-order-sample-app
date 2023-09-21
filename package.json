@@ -29,7 +29,7 @@
     "@shopify/shopify-api": "^3.0.0-rc.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
-    "graphql": "^16.3.0",
+    "graphql": "^16.8.1",
     "jest": "^27.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
