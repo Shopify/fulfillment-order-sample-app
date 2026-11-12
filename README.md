@@ -1,3 +1,5 @@
+> **This repository is no longer maintained.** It has been archived and receives no updates or security fixes.
+
 # Shopify Reference - Fulfillment App
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
